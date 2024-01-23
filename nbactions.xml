@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-license:update-file-header</actionName>
+            <displayName>license:update-file-header</displayName>
+            <goals>
+                <goal>license:update-file-header</goal>
+            </goals>
+        </action>
+    </actions>

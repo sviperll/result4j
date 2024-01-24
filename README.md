@@ -16,7 +16,7 @@ allow to write idiomatic functional code that can interact with methods that thr
 Result-type provides a way to pass error enformation as a first-class value through
 the code written in functional style.
 Routines are provided for interoperability of normal code that uses exception and
-functional code that uses Result-type, so that exceptions can be catched and propagated as
+functional code that uses Result-type, so that exceptions can be caught and propagated as
 errors in Result-type and then rethrown again later in the control-flow.
 
 Overview

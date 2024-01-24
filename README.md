@@ -4,10 +4,17 @@ Result-type for Java
 The project provides Result-type similar to Result-type in Rust that
 allows to return either successfull result or otherwise some kind of error.
 
-In Java native way of reporting errors are exceptions, either checked or unchecked,
-but Result-type provides a way to pass error enformation as a first-class value through
-the code written in functional style.
+In Java, the native way of reporting errors are exceptions, either checked or unchecked.
+You do not need Result-type most of the time in Java-code, where
+you can directly throw exceptions.
+But there are situations, where more functional-style is used.
+In such situations pure-functions are expected that throw no exceptions.
+Handling exception in such situations can be cumbersome and require a lot of boilerplate code.
+Result-type and associated helper-classes help with exception handling and
+allow to write idiomatic functional code that can interact with methods that throw exceptions.
 
+Result-type provides a way to pass error enformation as a first-class value through
+the code written in functional style.
 Routines are provided for interoperability of normal code that uses exception and
 functional code that uses Result-type, so that exceptions can be catched and propagated as
 errors in Result-type and then rethrown again later in the control-flow.

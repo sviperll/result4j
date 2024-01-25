@@ -40,6 +40,9 @@ import java.util.function.Function;
  * Result can be either success or failure, but not both at the same time.
  * Enclosed successful value or error value can be of different types,
  * represented by generic type-parameters.
+ * <p>
+ * The {@link Result#success(Object)} and {@link Result#error(Object)} methods
+ * create a new Result-value, that is respectively either a successful result or an error.
  *
  * <pre>{@code
  *     Result<String, E> suc = Result.success("Hello, World!");
@@ -52,6 +55,11 @@ import java.util.function.Function;
  * }</pre>
  * <p>
  * The above line declares error-value.
+ *
+ * <p>
+ * The {@link Result.Success} and {@link Result.Error} records are
+ * subtypes of the {@code Result}-type and allow to use pattern matching to distinguish between
+ * a successful result and an error
  *
  * <pre>{@code
  *     Result<String, Integer> result = ...;
@@ -75,8 +83,9 @@ import java.util.function.Function;
  * }</pre>
  * <p>
  * Instead of a low-level pattern-matching,
- * higher level helper-methods are available in `Result`-class.
- * In the snippet above `throwError` is used to throw exception when `Result` contains error.
+ * higher level helper-methods are available in {@code Result}-class.
+ * In the snippet above {@link Result#throwError(Function)} is used to throw exception when
+ * {@code Result} contains error.
  *
  * <pre>{@code
  *     String concatenation =

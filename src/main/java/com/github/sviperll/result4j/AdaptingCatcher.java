@@ -93,6 +93,36 @@ public class AdaptingCatcher<S extends Exception, D> {
             return mappedAdapter.forFunctions();
         }
 
+        /**
+         * Allows to adapt exception-throwing methods to return {@link Result}-type instead.
+         * <p>
+         * Instead of dealing with methods that can throw exceptions, these methods
+         * can be adapted to be function-objects that return exception as part of its result.
+         *
+         * <pre>{@code
+         *     class MyMain {
+         *         String loadResource(String name) throws IOException {
+         *             // ...
+         *         }
+         *
+         *         void main(String[] args) throws IOException {
+         *             Catcher.ForFunctions<IOException> catcher = ...
+         *             Function<String, Result<String, IOException>> f =
+         *                 catcher.catching(MyMain::loadResult);
+         *             Result<String, IOException> result = f.apply("my-resource");
+         *         }
+         *     }
+         * }</pre>
+         * <p>
+         * In the example above, instead of having {@code loadResource} method that
+         * can throw {@code IOException},
+         * we convert it to be a {@link Function} object that returns {@code IOException} as
+         * part of its result.
+         *
+         * @param <T> argument type of functions
+         * @param <R> the type of a successful result
+         * @param function function to adapt
+         */
         public <T, R> Function<T, Result<R, D>> catching(
                 ExceptionfulFunction<? super T, ? extends R, ? extends S> function
         ) {
@@ -121,6 +151,37 @@ public class AdaptingCatcher<S extends Exception, D> {
             return mappedAdapter.forBiFunctions();
         }
 
+        /**
+         * Allows to adapt exception-throwing methods to return {@link Result}-type instead.
+         * <p>
+         * Instead of dealing with methods that can throw exceptions, these methods
+         * can be adapted to be function-objects that return exception as part of its result.
+         *
+         * <pre>{@code
+         *     class MyMain {
+         *         String loadResource(String name, Language language) throws IOException {
+         *             // ...
+         *         }
+         *
+         *         void main(String[] args) throws IOException {
+         *             Catcher.ForBiFunctions<IOException> catcher = ...
+         *             BiFunction<String, Language, Result<String, IOException>> f =
+         *                 catcher.catching(MyMain::loadResult);
+         *             Result<String, IOException> result = f.apply("my-resource", Language.EN);
+         *         }
+         *     }
+         * }</pre>
+         * <p>
+         * In the example above, instead of having {@code loadResource} method that
+         * can throw {@code IOException},
+         * we convert it to be a {@link BiFunction} object that returns {@code IOException} as
+         * part of its result.
+         *
+         * @param <T> first argument type of functions
+         * @param <U> second argument type of functions
+         * @param <R> the type of a successful result
+         * @param function function to adapt
+         */
         public <T, U, R> BiFunction<T, U, Result<R, D>> catching(
                 ExceptionfulBiFunction<? super T, ? super U, ? extends R, ? extends S> function
         ) {
@@ -132,7 +193,6 @@ public class AdaptingCatcher<S extends Exception, D> {
                 }
             };
         }
-
     }
 
     public static class ForSuppliers<S extends Exception, D> {
@@ -149,6 +209,36 @@ public class AdaptingCatcher<S extends Exception, D> {
             return mappedAdapter.forSuppliers();
         }
 
+
+        /**
+         * Allows to adapt exception-throwing methods to return {@link Result}-type instead.
+         * <p>
+         * Instead of dealing with methods that can throw exceptions, these methods
+         * can be adapted to be function-objects that return exception as part of its result.
+         *
+         * <pre>{@code
+         *     class MyMain {
+         *         String loadResource() throws IOException {
+         *             // ...
+         *         }
+         *
+         *         void main(String[] args) throws IOException {
+         *             Catcher.ForSuppliers<IOException> catcher = ...
+         *             Supplier<Result<String, IOException>> f =
+         *                 catcher.catching(MyMain::loadResult);
+         *             Result<String, IOException> result = f.get();
+         *         }
+         *     }
+         * }</pre>
+         * <p>
+         * In the example above, instead of having {@code loadResource} method that
+         * can throw {@code IOException},
+         * we convert it to be a {@link Supplier} object that returns {@code IOException} as
+         * part of its result.
+         *
+         * @param <T> type of supplied value
+         * @param supplier supplier to adapt
+         */
         public <T> Supplier<Result<T, D>> catching(
                 ExceptionfulSupplier<? extends T, ? extends S> supplier
         ) {
@@ -177,6 +267,39 @@ public class AdaptingCatcher<S extends Exception, D> {
             return mappedAdapter.forConsumers();
         }
 
+        /**
+         * Allows to adapt exception-throwing methods to return {@link Result}-type instead.
+         * <p>
+         * Instead of dealing with methods that can throw exceptions, these methods
+         * can be adapted to be function-objects that return exception as part of its result.
+         *
+         * <pre>{@code
+         *     class MyMain {
+         *         void saveData(String data) throws IOException {
+         *             // ...
+         *         }
+         *
+         *         void main(String[] args) throws IOException {
+         *             Catcher.ForConsumers<IOException> catcher = ...
+         *             Function<String, Result<Void, IOException>> f =
+         *                 catcher.catching(MyMain::saveData);
+         *             Result<Void, IOException> result = f.apply("data");
+         *         }
+         *     }
+         * }</pre>
+         * <p>
+         * In the example above, instead of having {@code saveData} method that
+         * can throw {@code IOException},
+         * we convert it to be a {@link Function} object that returns {@code IOException} as
+         * part of its result.
+         * Note that even though, the original method corresponds to
+         * the {@link java.util.function.Consumer} functional interface,
+         * we need its adapted version to be a {@link Function}, because
+         * exception is now part of the result.
+         *
+         * @param <T> the type of consumed values
+         * @param consumer consumer to adapt
+         */
         public <T> Function<T, Result<Void, D>> catching(
                 ExceptionfulConsumer<? super T, ? extends S> consumer
         ) {
@@ -205,6 +328,40 @@ public class AdaptingCatcher<S extends Exception, D> {
             return mappedAdapter.forBiConsumers();
         }
 
+        /**
+         * Allows to adapt exception-throwing methods to return {@link Result}-type instead.
+         * <p>
+         * Instead of dealing with methods that can throw exceptions, these methods
+         * can be adapted to be function-objects that return exception as part of its result.
+         *
+         * <pre>{@code
+         *     class MyMain {
+         *         void saveData(Path path, String data) throws IOException {
+         *             // ...
+         *         }
+         *
+         *         void main(String[] args) throws IOException {
+         *             Catcher.ForBiConsumers<IOException> catcher = ...
+         *             BiFunction<Path, String, Result<Void, IOException>> f =
+         *                 catcher.catching(MyMain::saveData);
+         *             Result<Void, IOException> result = f.apply(Path.of("x.txt"), "data");
+         *         }
+         *     }
+         * }</pre>
+         * <p>
+         * In the example above, instead of having {@code saveData} method that
+         * can throw {@code IOException},
+         * we convert it to be a {@link Function} object that returns {@code IOException} as
+         * part of its result.
+         * Note that even though, the original method corresponds to
+         * the {@link java.util.function.Consumer} functional interface,
+         * we need its adapted version to be a {@link Function}, because
+         * exception is now part of the result.
+         *
+         * @param <T> the type of first value from pair of consumed values
+         * @param <U> the type of second value from pair of consumed values
+         * @param consumer consumer to adapt
+         */
         public <T, U> BiFunction<T, U, Result<Void, D>> catching(
                 ExceptionfulBiConsumer<? super T, ? super U, ? extends S> consumer
         ) {
@@ -233,7 +390,40 @@ public class AdaptingCatcher<S extends Exception, D> {
             return mappedAdapter.forRunnables();
         }
 
-        public <T> Supplier<Result<Void, D>> catching(
+
+        /**
+         * Allows to adapt exception-throwing methods to return {@link Result}-type instead.
+         * <p>
+         * Instead of dealing with methods that can throw exceptions, these methods
+         * can be adapted to be function-objects that return exception as part of its result.
+         *
+         * <pre>{@code
+         *     class MyMain {
+         *         void updateData() throws IOException {
+         *             // ...
+         *         }
+         *
+         *         void main(String[] args) throws IOException {
+         *             Catcher.ForRunnables<IOException> catcher = ...
+         *             Supplier<Result<Void, IOException>> f =
+         *                 catcher.catching(MyMain::updateData);
+         *             Result<Void, IOException> result = f.get();
+         *         }
+         *     }
+         * }</pre>
+         * <p>
+         * In the example above, instead of having {@code saveData} method that
+         * can throw {@code IOException},
+         * we convert it to be a {@link Function} object that returns {@code IOException} as
+         * part of its result.
+         * Note that even though, the original method corresponds to
+         * the {@link java.util.function.Consumer} functional interface,
+         * we need its adapted version to be a {@link Function}, because
+         * exception is now part of the result.
+         *
+         * @param runnable runnable to adapt
+         */
+        public Supplier<Result<Void, D>> catching(
                 ExceptionfulRunnable<? extends S> runnable
         ) {
             return () -> {

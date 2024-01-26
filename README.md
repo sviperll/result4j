@@ -19,8 +19,23 @@ Routines are provided for interoperability of normal code that uses exception an
 functional code that uses Result-type, so that exceptions can be caught and propagated as
 errors in Result-type and then rethrown again later in the control-flow.
 
+Getting Started
+---------------
+
+result4j is available throw Maven Central.
+
+````
+        <dependency>
+            <groupId>com.github.sviperll</groupId>
+            <artifactId>result4j</artifactId>
+            <version>1.0</version>
+        </dependency>
+````
+
 Overview
 --------
+
+[API Documentation is available for reference](https://www.javadoc.io/doc/com.github.sviperll/result4j).
 
 Result type can be either a successful result or some kind of error.
 

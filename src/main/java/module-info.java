@@ -30,7 +30,7 @@
  * Result-type and associated helper-classes help with exception handling and
  * allow to write idiomatic functional code that can interact with methods that throw exceptions.
  *
- * @see com.github.sviperll.result4j
+ * @see com.github.sviperll.result4j/com.github.sviperll.result4j
  */
 module com.github.sviperll.result4j {
     requires java.base;

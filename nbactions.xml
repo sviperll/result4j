@@ -7,4 +7,19 @@
                 <goal>license:update-file-header</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-javadoc:javadoc</actionName>
+            <displayName>javadoc:javadoc</displayName>
+            <goals>
+                <goal>javadoc:javadoc</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-javadoc:clean javadoc:javadoc</actionName>
+            <displayName>javadoc:clean javadoc:javadoc</displayName>
+            <goals>
+                <goal>javadoc:clean</goal>
+                <goal>javadoc:javadoc</goal>
+            </goals>
+        </action>
     </actions>

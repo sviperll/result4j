@@ -24,8 +24,122 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
+ * Allows to adapt exception-throwing methods to return {@link Result}-type instead.
+ * <p>
+ * Instead of dealing with methods that can throw exceptions, these methods
+ * can be adapted to be function-objects that return {@link Result}-values.
+ * {@link Catcher} class serves for a basic use case where
+ * you get exception-instance as an error-value of the result.
+ * {@code AdaptingCatcher} usage is similar to that of the {@link Catcher} class, but
+ * {@code AdaptingCatcher} allows to adapt caught exceptions, so that
+ * Result error values are not literal exception-instances, but
+ * some values that are obtained by transforming these caught exceptions.
+ *
+ * {@snippet lang="java" :
+ *     // @highlight region="highlightint" substring="Integer"
+ *     // @highlight substring="AdaptingCatcher" :
+ *     AdaptingCatcher<HTTPException, Integer> http =
+ *             // @link substring="map" target="Catcher#map(Function)" :
+ *             Catcher.of(HTTPException.class).map(HTTPException::errorCode);
+ *     Supplier<Result<JSONObject, Integer>> supplier =
+ *             http.forSuppliers().catching(() -> loadJson());
+ *     Result<JSONObject, Integer> result = supplier.get();
+ *     // @end region="highlightint"
+ * }
+ * <p>
+ * In the example above exception-throwing method {@code loadJson}
+ * is adapted to be a {@link Supplier}-object, that
+ * supplies a result, that can be either a {@code JSONObject} in case of the success, or
+ * an {@link Integer} HTTP-code in case of an error.
+ * HTTP-error code is extracted from {@code HTTPException}
+ * using the {@code HTTPException::errorCode} method as
+ * specified in the call to {@link Catcher#map(Function)}.
+ * <p>
+ * Another reason to adapt caught exceptions is to wrap different low-level exceptions into
+ * a single common high-level exception type.
+ *
+ * {@snippet lang="java" :
+ *     // @highlight region substring="IOException" type="highlighted"
+ *     // @highlight regex="\bio\b" type="highlighted" :
+ *     AdaptingCatcher.ForFunctions<IOException, PipelineException> io =
+ *             Catcher.of(IOException.class).map(PipelineException::new).forFunctions();
+ *     // @end
+ *     // @highlight region substring="MLException" type="highlighted"
+ *     // @highlight substring="ml" type="highlighted" :
+ *     AdaptingCatcher.ForFunctions<MLException, PipelineException> ml =
+ *             Catcher.of(MLException.class).map(PipelineException::new).forFunctions();
+ *     // @end
+ *     List<Animal> animals1 =
+ *             List.of("cat.jpg", "dog.jpg")
+ *                     .stream()
+ *                     // @highlight substring="io" type="highlighted" :
+ *                     .map(io.catching(Fakes::readFile))
+ *                     // @highlight substring="ml" type="highlighted" :
+ *                     .map(Result.flatMapping(ml.catching(Fakes::recognizeImage)))
+ *                     .collect(ResultCollectors.toSingleResult(Collectors.toList()))
+ *                     .throwError(Function.identity());
+ * }
+ * <p>
+ * In the example above two methods are used {@code readFile} and {@code recognizeImage}.
+ * These two methods throw different exceptions:
+ * {@code IOException} and {@code MLException} respectively.
+ * In this example we adapt these methods with two different {@code AdaptingCatcher}s,
+ * one is {@code io}, and another is {@code ml}.
+ * These {@code AdaptingCatcher}s are configured to handle corresponding exceptions types,
+ * but adapted functions
+ * do not return {@code IOException} or {@code MLException} as their error-values.
+ * Instead adapted functions in both cases
+ * return single high-level {@code PipelineException} as an error-value.
+ * <p>
+ * {@code AdaptingCatcher} class has methods that
+ * specialize it to deal with different varieties of methods
+ * (number of arguments or being {@code void}).
+ * These varieties are referenced by correspondence to a functional-interface from
+ * {@link java.util.function} package.
+ *
+ * <table>
+ *   <caption>Specialized AdaptingCatcher classes</caption>
+ *   <tr>
+ *     <th>Functional interface</th>
+ *     <th>AdaptingCatcher method</th>
+ *     <th>Specialized subclass</th>
+ *   </tr>
+ *   <tr>
+ *     <td>{@link java.util.function.BiConsumer}</td>
+ *     <td>{@link AdaptingCatcher#forBiConsumers()}</td>
+ *     <td>{@link AdaptingCatcher.ForBiConsumers}</td>
+ *   <tr>
+ *   <tr>
+ *     <td>{@link java.util.function.BiFunction}</td>
+ *     <td>{@link AdaptingCatcher#forBiFunctions()}</td>
+ *     <td>{@link AdaptingCatcher.ForBiFunctions}</td>
+ *   <tr>
+ *   <tr>
+ *     <td>{@link java.util.function.Consumer}</td>
+ *     <td>{@link AdaptingCatcher#forConsumers()}</td>
+ *     <td>{@link AdaptingCatcher.ForConsumers}</td>
+ *   <tr>
+ *   <tr>
+ *     <td>{@link java.util.function.Function}</td>
+ *     <td>{@link AdaptingCatcher#forFunctions()}</td>
+ *     <td>{@link AdaptingCatcher.ForFunctions}</td>
+ *   <tr>
+ *   <tr>
+ *     <td>{@link Runnable}</td>
+ *     <td>{@link AdaptingCatcher#forRunnables()}</td>
+ *     <td>{@link AdaptingCatcher.ForRunnables}</td>
+ *   <tr>
+ *   <tr>
+ *     <td>{@link java.util.function.Supplier}</td>
+ *     <td>{@link AdaptingCatcher#forSuppliers()}</td>
+ *     <td>{@link AdaptingCatcher.ForSuppliers}</td>
+ *   <tr>
+ * </table>
+ *
  * @param <S> source exception type
- * @param <D> destination exception type
+ * @param <D> error result type
+ * @see Catcher
+ * @see Result
  */
 public class AdaptingCatcher<S extends Exception, D> {
     private final Class<S> exceptionClass;
@@ -37,7 +151,7 @@ public class AdaptingCatcher<S extends Exception, D> {
     }
 
     /**
-     * @param <E> new destination exception type
+     * @param <E> new error result type
      */
     public <E> AdaptingCatcher<S, E> map(
             Function<? super D, ? extends E> conversion
@@ -45,26 +159,62 @@ public class AdaptingCatcher<S extends Exception, D> {
         return new AdaptingCatcher<>(exceptionClass, this.conversion.andThen(conversion));
     }
 
+    /**
+     * Specializes {@link AdaptingCatcher} to deal with methods that
+     * correspond to a shape of {@link java.util.function.Function} functional interface.
+     *
+     * @see AdaptingCatcher.ForFunctions
+     */
     public ForFunctions<S, D> forFunctions() {
         return new ForFunctions<>(this);
     }
 
+    /**
+     * Specializes {@link AdaptingCatcher} to deal with methods that
+     * correspond to a shape of {@link java.util.function.BiFunction} functional interface.
+     *
+     * @see AdaptingCatcher.ForBiFunctions
+     */
     public ForBiFunctions<S, D> forBiFunctions() {
         return new ForBiFunctions<>(this);
     }
 
+    /**
+     * Specializes {@link AdaptingCatcher} to deal with methods that
+     * correspond to a shape of {@link java.util.function.Supplier} functional interface.
+     *
+     * @see AdaptingCatcher.ForSuppliers
+     */
     public ForSuppliers<S, D> forSuppliers() {
         return new ForSuppliers<>(this);
     }
 
+    /**
+     * Specializes {@link AdaptingCatcher} to deal with methods that
+     * correspond to a shape of {@link Runnable} functional interface.
+     *
+     * @see AdaptingCatcher.ForRunnables
+     */
     public ForRunnables<S, D> forRunnables() {
         return new ForRunnables<>(this);
     }
 
+    /**
+     * Specializes {@link AdaptingCatcher} to deal with methods that
+     * correspond to a shape of {@link java.util.function.Consumer} functional interface.
+     *
+     * @see AdaptingCatcher.ForConsumers
+     */
     public ForConsumers<S, D> forConsumers() {
         return new ForConsumers<>(this);
     }
 
+    /**
+     * Specializes {@link AdaptingCatcher} to deal with methods that
+     * correspond to a shape of {@link java.util.function.BiConsumer} functional interface.
+     *
+     * @see AdaptingCatcher.ForBiConsumers
+     */
     public ForBiConsumers<S, D> forBiConsumers() {
         return new ForBiConsumers<>(this);
     }
@@ -79,6 +229,14 @@ public class AdaptingCatcher<S extends Exception, D> {
         }
     }
 
+    /**
+     * Specialized version of {@link AdaptingCatcher} that deals with methods that
+     * correspond to a shape of {@link java.util.function.Function} functional interface.
+     *
+     * @param <S> source exception type
+     * @param <D> error result type
+     * @see ForFunctions#catching(ExceptionfulFunction)
+     */
     public static class ForFunctions<S extends Exception, D> {
 
         private final AdaptingCatcher<S, D> adapter;
@@ -86,6 +244,9 @@ public class AdaptingCatcher<S extends Exception, D> {
             this.adapter = adapter;
         }
 
+        /**
+         * @param <E> new error result type
+         */
         public <E> ForFunctions<S, E> map(
                 Function<? super D, ? extends E> conversion
         ) {
@@ -137,6 +298,14 @@ public class AdaptingCatcher<S extends Exception, D> {
 
     }
 
+    /**
+     * Specialized version of {@link AdaptingCatcher} that deals with methods that
+     * correspond to a shape of {@link java.util.function.BiFunction} functional interface.
+     *
+     * @param <S> source exception type
+     * @param <D> error result type
+     * @see ForBiFunctions#catching(ExceptionfulBiFunction)
+     */
     public static class ForBiFunctions<S extends Exception, D> {
 
         private final AdaptingCatcher<S, D> adapter;
@@ -144,6 +313,9 @@ public class AdaptingCatcher<S extends Exception, D> {
             this.adapter = adapter;
         }
 
+        /**
+         * @param <E> new error result type
+         */
         public <E> ForBiFunctions<S, E> map(
                 Function<? super D, ? extends E> conversion
         ) {
@@ -195,6 +367,14 @@ public class AdaptingCatcher<S extends Exception, D> {
         }
     }
 
+    /**
+     * Specialized version of {@link AdaptingCatcher} that deals with methods that
+     * correspond to a shape of {@link java.util.function.Supplier} functional interface.
+     *
+     * @param <S> source exception type
+     * @param <D> error result type
+     * @see ForSuppliers#catching(ExceptionfulSupplier)
+     */
     public static class ForSuppliers<S extends Exception, D> {
 
         private final AdaptingCatcher<S, D> adapter;
@@ -202,6 +382,9 @@ public class AdaptingCatcher<S extends Exception, D> {
             this.adapter = adapter;
         }
 
+        /**
+         * @param <E> new error result type
+         */
         public <E> ForSuppliers<S, E> map(
                 Function<? super D, ? extends E> conversion
         ) {
@@ -253,6 +436,14 @@ public class AdaptingCatcher<S extends Exception, D> {
 
     }
 
+    /**
+     * Specialized version of {@link AdaptingCatcher} that deals with methods that
+     * correspond to a shape of {@link java.util.function.Consumer} functional interface.
+     *
+     * @param <S> source exception type
+     * @param <D> error result type
+     * @see ForConsumers#catching(ExceptionfulConsumer)
+     */
     public static class ForConsumers<S extends Exception, D> {
 
         private final AdaptingCatcher<S, D> adapter;
@@ -260,6 +451,9 @@ public class AdaptingCatcher<S extends Exception, D> {
             this.adapter = adapter;
         }
 
+        /**
+         * @param <E> new error result type
+         */
         public <E> ForConsumers<S, E> map(
                 Function<? super D, ? extends E> conversion
         ) {
@@ -314,6 +508,14 @@ public class AdaptingCatcher<S extends Exception, D> {
         }
     }
 
+    /**
+     * Specialized version of {@link AdaptingCatcher} that deals with methods that
+     * correspond to a shape of {@link java.util.function.BiConsumer} functional interface.
+     *
+     * @param <S> source exception type
+     * @param <D> error result type
+     * @see ForBiConsumers#catching(ExceptionfulBiConsumer)
+     */
     public static class ForBiConsumers<S extends Exception, D> {
 
         private final AdaptingCatcher<S, D> adapter;
@@ -321,6 +523,9 @@ public class AdaptingCatcher<S extends Exception, D> {
             this.adapter = adapter;
         }
 
+        /**
+         * @param <E> new error result type
+         */
         public <E> ForBiConsumers<S, E> map(
                 Function<? super D, ? extends E> conversion
         ) {
@@ -376,6 +581,14 @@ public class AdaptingCatcher<S extends Exception, D> {
         }
     }
 
+    /**
+     * Specialized version of {@link AdaptingCatcher} that deals with methods that
+     * correspond to a shape of {@link Runnable} functional interface.
+     *
+     * @param <S> source exception type
+     * @param <D> error result type
+     * @see ForRunnables#catching(ExceptionfulRunnable)
+     */
     public static class ForRunnables<S extends Exception, D> {
 
         private final AdaptingCatcher<S, D> adapter;
@@ -383,6 +596,9 @@ public class AdaptingCatcher<S extends Exception, D> {
             this.adapter = adapter;
         }
 
+        /**
+         * @param <E> new error result type
+         */
         public <E> ForRunnables<S, E> map(
                 Function<? super D, ? extends E> conversion
         ) {

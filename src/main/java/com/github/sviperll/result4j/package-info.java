@@ -35,7 +35,8 @@
  * Routines are provided for interoperability of normal code that uses exception and
  * functional code that uses Result-type, so that exceptions can be caught and propagated as
  * errors in {@link Result}-type and then rethrown again later in the control-flow.
- * <pre>{@code
+ *
+ * {@snippet lang="java" :
  *     Catcher.ForFunctions<IOException> io =
  *         Catcher.of(IOException.class).forFunctions();
  *     String concatenation =
@@ -43,7 +44,7 @@
  *                     .map(io.catching(name -> loadResource(name)))
  *                     .collect(ResultCollectors.toSingleResult(Collectors.join()))
  *                     .throwError(Function.identity());
- * }</pre>
+ * }
  * <p>
  * Above code uses {@link Catcher} class to adapt functions that
  * throw exceptions to return Result-type instead.
@@ -57,7 +58,7 @@
  * <p>
  * There is also an {@link AdaptingCatcher} class that allows to adapt or wrap exceptions.
  *
- * <pre>{@code
+ * {@snippet lang="java" :
  *     AdaptingCatcher.ForFunctions<IOException, PipelineException> io =
  *             Catcher.of(IOException.class).map(PipelineException::new).forFunctions();
  *     AdaptingCatcher.ForFunctions<MLException, PipelineException> ml =
@@ -70,6 +71,6 @@
  *                     .collect(ResultCollectors.toSingleResult(Collectors.toList()))
  *                     .throwError(Function.identity());
  *     Assertions.assertEquals(List.of(Animal.CAT, Animal.DOG), animals1);
- * }</pre>
+ * }
  */
 package com.github.sviperll.result4j;

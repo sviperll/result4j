@@ -44,15 +44,15 @@ import java.util.function.Function;
  * The {@link Result#success(Object)} and {@link Result#error(Object)} methods
  * create a new Result-value, that is respectively either a successful result or an error.
  *
- * <pre>{@code
+ * {@snippet lang="java" :
  *     Result<String, E> suc = Result.success("Hello, World!");
- * }</pre>
+ * }
  * <p>
  * The above line declares successful result value.
  *
- * <pre>{@code
+ * {@snippet lang="java" :
  *     Result<String, Integer> err = Result.error(404);
- * }</pre>
+ * }
  * <p>
  * The above line declares error-value.
  *
@@ -61,7 +61,7 @@ import java.util.function.Function;
  * subtypes of the {@code Result}-type and allow to use pattern matching to distinguish between
  * a successful result and an error
  *
- * <pre>{@code
+ * {@snippet lang="java" :
  *     Result<String, Integer> result = ...;
  *     switch (result) {
  *         case Result.Success<String, Integer>(String value) ->
@@ -69,31 +69,31 @@ import java.util.function.Function;
  *         case Result.Error<String, Integer>(Integer code) ->
  *                 throw new IOException("%s: error".formatted(code));
  *     }
- * }</pre>
+ * }
  * <p>
  * Pattern matching can be used to check unknown result value as shown above.
  *
- * <pre>{@code
+ * {@snippet lang="java" :
  *     Result<String, Integer> receivedResult = ...;
  *     String value =
  *             receivedResult.throwError(
  *                     code -> new IOException("%s: error".formatted(code))
  *             );
  *     System.out.println(value);
- * }</pre>
+ * }
  * <p>
  * Instead of a low-level pattern-matching,
  * higher level helper-methods are available in {@code Result}-class.
  * In the snippet above {@link Result#throwError(Function)} is used to throw exception when
  * {@code Result} contains error.
  *
- * <pre>{@code
+ * {@snippet lang="java" :
  *     String concatenation =
  *             Stream.of("a.txt", "b.txt", "c.txt")
  *                     .map(name -> loadFile(name))
  *                     .collect(ResultCollectors.toSingleResult(Collectors.join()))
  *                     .throwError(Function.identity());
- * }</pre>
+ * }
  * <p>
  * In the above example we expect that the {@code loadFile} method returns the {@code Result}-type
  * instead of throwing an exception.
@@ -125,21 +125,21 @@ public sealed interface Result<R, E> {
      * <p>
      * This method can be used to make multi-level transformation easier to read.
      *
-     * <pre>{@code
+     * {@snippet lang="java" :
      *     List<Result<R, E>> results = ...;
      *     results.stream()
      *         .map(result -> result.mapError(e -> transform(e)))
      *         ...
-     * }</pre>
+     * }
      * <p>
      * Instead of the above code, one can write
      *
-     * <pre>{@code
+     * {@snippet lang="java" :
      *     List<Result<R, E>> results = ...;
      *     results.stream()
      *         .map(Result.errorMapping(e -> transform(e)))
      *         ...
-     * }</pre>
+     * }
      *
      * @param transformation transformation to be applied to error-values
      * @param <R> type of successful result value
@@ -166,21 +166,21 @@ public sealed interface Result<R, E> {
      * <p>
      * This method can be used to make multi-level transformation easier to read.
      *
-     * <pre>{@code
+     * {@snippet lang="java" :
      *     List<Result<R, E>> results = ...;
      *     results.stream()
      *         .map(result -> result.map(value -> transform(value)))
      *         ...
-     * }</pre>
+     * }
      * <p>
      * Instead of the above code, one can write
      *
-     * <pre>{@code
+     * {@snippet lang="java" :
      *     List<Result<R, E>> results = ...;
      *     results.stream()
      *         .map(Result.mapping(e -> transform(e)))
      *         ...
-     * }</pre>
+     * }
      *
      * @param transformation transformation to be applied to a value of a successful result
      * @param <T> type of successful input result value
@@ -208,21 +208,21 @@ public sealed interface Result<R, E> {
      * <p>
      * This method can be used to make multi-level transformation easier to read.
      *
-     * <pre>{@code
+     * {@snippet lang="java" :
      *     List<Result<R, E>> results = ...;
      *     results.stream()
      *         .map(result -> result.flatMap(value -> actOn(value)))
      *         ...
-     * }</pre>
+     * }
      * <p>
      * Instead of the above code, one can write
      *
-     * <pre>{@code
+     * {@snippet lang="java" :
      *     List<Result<R, E>> results = ...;
      *     results.stream()
      *         .map(Result.flatMapping(e -> actOn(e)))
      *         ...
-     * }</pre>
+     * }
      *
      * @param transformation transformation to be applied to a value of a successful result
      * @param <T> type of successful input result value

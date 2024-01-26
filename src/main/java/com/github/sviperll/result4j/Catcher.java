@@ -35,7 +35,7 @@ import java.util.function.Function;
  *
  *         void main(String[] args) throws IOException {
  *             Function<String, Result<String, IOException>> f =
- *                 Catcher.of(IOException.class).forFunctions().catching(MyMain::loadResult);
+ *                 Catcher.of(IOException.class).forFunctions().catching(MyMain::loadResource);
  *             Result<String, IOException> result = f.apply("my-resource");
  *         }
  *     }
@@ -51,7 +51,7 @@ import java.util.function.Function;
  * {@code Catcher} class has methods that
  * specialize it to deal with different varieties of methods
  * (number of arguments or being {@code void}).
- * These varieties are referenced by corresponding to a functional-interface from
+ * These varieties are referenced by correspondence to a functional-interface from
  * {@link java.util.function} package.
  *
  * <table>
@@ -89,6 +89,14 @@ import java.util.function.Function;
  *   <tr>
  * </table>
  *
+ * <p>
+ * Often you do not need exception-objects to represent error-result and instead
+ * may want to convert exceptions to some other error-values.
+ * In other situations, you may be not interested in original exceptions and
+ * may want to wrap original low-level exceptions into a higher-level exception class.
+ * {@link AdaptingCatcher} serves for these purposes and
+ * can be created with {@link Catcher#map(Function)} class.
+ *
  * @param <E> exception type
  * @see Result
  * @see Catcher.ForBiConsumers
@@ -97,6 +105,7 @@ import java.util.function.Function;
  * @see Catcher.ForFunctions
  * @see Catcher.ForRunnables
  * @see Catcher.ForSuppliers
+ * @see AdaptingCatcher
  */
 public class Catcher<E extends Exception> extends AdaptingCatcher<E, E> {
     public static <E extends Exception> Catcher<E> of(Class<E> exceptionClass) {
@@ -121,6 +130,8 @@ public class Catcher<E extends Exception> extends AdaptingCatcher<E, E> {
     /**
      * Specializes {@link Catcher} to deal with methods that
      * correspond to a shape of {@link java.util.function.BiFunction} functional interface.
+     *
+     * @see Catcher.ForBiFunctions
      */
     @Override
     public ForBiFunctions<E> forBiFunctions() {

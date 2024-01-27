@@ -22,7 +22,8 @@ errors in Result-type and then rethrown again later in the control-flow.
 Getting Started
 ---------------
 
-result4j is available throw Maven Central.
+result4j
+[is available in Maven Central](https://central.sonatype.com/artifact/com.github.sviperll/result4j).
 
 ````
         <dependency>

@@ -35,6 +35,7 @@ package com.github.sviperll.result4j;
  * @param <E> the exception thrown by the function
  * @see Catcher.ForBiConsumers#catching(ExceptionfulBiConsumer)
  */
+@FunctionalInterface
 public interface ExceptionfulBiConsumer<T, U, E extends Exception> {
     void accept(T argument1, U argument2) throws E;
 }

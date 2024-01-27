@@ -34,6 +34,7 @@ package com.github.sviperll.result4j;
  * @param <E> the exception thrown by the function
  * @see Catcher.ForConsumers#catching(ExceptionfulConsumer)
  */
+@FunctionalInterface
 public interface ExceptionfulConsumer<T, E extends Exception> {
     void accept(T argument) throws E;
 }

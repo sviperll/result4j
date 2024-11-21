@@ -404,10 +404,10 @@ public sealed interface Result<R, E> {
     void ifSuccess(Consumer<R> consumer);
 
     /** Invokes given consumer for an error-value of this result, and returns the same result. */
-    Result<R, E> onError(Consumer<E> consumer);
+    Result<R, E> peekError(Consumer<E> consumer);
 
     /** Invokes given consumer for a success-value of this result, and returns the same result. */
-    Result<R, E> onSuccess(Consumer<R> consumer);
+    Result<R, E> peekSuccess(Consumer<R> consumer);
 
     /**
      * Transforms a value of this result, when this is a successful result.
@@ -482,12 +482,12 @@ public sealed interface Result<R, E> {
         }
 
         @Override
-        public Result<R, E> onError(Consumer<E> consumer) {
+        public Result<R, E> peekError(Consumer<E> consumer) {
             return this;
         }
 
         @Override
-        public Result<R, E> onSuccess(Consumer<R> consumer) {
+        public Result<R, E> peekSuccess(Consumer<R> consumer) {
             consumer.accept(result);
             return this;
         }
@@ -540,13 +540,13 @@ public sealed interface Result<R, E> {
         }
 
         @Override
-        public Result<R, E> onError(Consumer<E> consumer) {
+        public Result<R, E> peekError(Consumer<E> consumer) {
             consumer.accept(error);
             return this;
         }
 
         @Override
-        public Result<R, E> onSuccess(Consumer<R> consumer) {
+        public Result<R, E> peekSuccess(Consumer<R> consumer) {
             return this;
         }
     }

@@ -1,0 +1,39 @@
+name: Continuous Integration Checks
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch: ~
+
+# https://docs.github.com/en/actions/using-jobs/using-concurrency
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-ci:
+    name: Run checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+          check-latest: true
+
+      - name: Execute Maven 'validate' task
+        shell: bash
+        run: ./mvnw validate

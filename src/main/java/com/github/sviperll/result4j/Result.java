@@ -116,7 +116,7 @@ public sealed interface Result<R, E> {
      * Produces function-object that transforms error-values of results.
      * <p>
      * Similarly to {@link Result#mapError(Function)},
-     * this method allows to apply a transformation to a error-value, associated with a result,
+     * this method allows to apply a transformation to an error-value, associated with a result,
      * to get a new result.
      * In contrast to {@link Result#mapError(Function)},
      * instead of applying the transformation to some particular result,
@@ -280,7 +280,7 @@ public sealed interface Result<R, E> {
      * @param <R> type of successful result value
      * @param <E> type representing error-value
      * @param value {@code Optional}-value containing {@code Result}-value
-     * @return
+     * @return {@code Result}-value with {@code Optional} successful result value.
      */
     static <R, E> Result<Optional<R>, E> fromOptionalResult(
             Optional<Result<R, E>> value
@@ -305,7 +305,8 @@ public sealed interface Result<R, E> {
      * @param <E> type representing error-value
      * @param optional {@code Optional}-value
      * @param error error value
-     * @return
+     * @return {@code Result}-value with {@code Optional} successful result value,
+     *      or given error value.
      */
     static <R, E> Result<R, E> fromOptional(Optional<R> optional, E error) {
         Optional<Result<R, E>> optionalResult = optional.map(Result::success);
@@ -325,7 +326,7 @@ public sealed interface Result<R, E> {
      *   the result of this method is exactly the same as provided argument.
      * </ul>
      *
-     * @param <U> type of a successful result of a successor
+     * @param <U> type of successful result of a successor
      * @param result successor result
      */
     <U> Result<U, E> andThen(Result<U, E> result);
@@ -342,7 +343,7 @@ public sealed interface Result<R, E> {
      *   the result of this method a new result with transformed value.
      * </ul>
      *
-     * @param <U> new type of a successful result value
+     * @param <U> new type of successful result value
      * @param transformation transformation to be applied to values
      */
     <U> Result<U, E> map(Function<? super R, ? extends U> transformation);
@@ -350,7 +351,7 @@ public sealed interface Result<R, E> {
     /**
      * Transforms an error-value of this result, when this is an error.
      * <p>
-     * this method allows to apply a transformation to a error-value,
+     * this method allows to apply a transformation to an error-value,
      * associated with a result, to get a new result.
      * <ul>
      *   <li>When this result is an error, then
@@ -359,7 +360,7 @@ public sealed interface Result<R, E> {
      *   the result of this method the same successful result with the same value.
      * </ul>
      *
-     * @param <E1> new type of an error-value
+     * @param <E1> new type of error-value
      * @param transformation transformation to be applied to error-values
      */
     <E1> Result<R, E1> mapError(Function<? super E, ? extends E1> transformation);
@@ -387,20 +388,26 @@ public sealed interface Result<R, E> {
      * throws an exception, by creating exception instance from error-value.
      *
      * @param <X> type of thrown exception
-     * @param errorToExceptionConvertion function to convert error-value to an exception
+     * @param errorToExceptionConverter function to convert error-value to an exception
      * @return the value of this result, when it is a successful result
      * @throws X when this is an error result
      */
-    default <X extends Exception> R throwError(Function<? super E, X> errorToExceptionConvertion)
+    default <X extends Exception> R throwError(Function<? super E, X> errorToExceptionConverter)
             throws X {
         return switch (this) {
             case Success<R, E> success -> success.result;
-            case Error<R, E> error -> throw errorToExceptionConvertion.apply(error.error);
+            case Error<R, E> error -> throw errorToExceptionConverter.apply(error.error);
         };
     }
 
     /** Invokes given consumer for a successful result value. */
     void ifSuccess(Consumer<R> consumer);
+
+    /** Invokes given consumer for an error-value of this result, and returns the same result. */
+    Result<R, E> onError(Consumer<E> consumer);
+
+    /** Invokes given consumer for a success-value of this result, and returns the same result. */
+    Result<R, E> onSuccess(Consumer<R> consumer);
 
     /**
      * Transforms a value of this result, when this is a successful result.
@@ -415,7 +422,7 @@ public sealed interface Result<R, E> {
      *   the result of this method the result of applying transformation to the argument.
      * </ul>
      *
-     * @param <U> new type of a successful result value
+     * @param <U> new type of successful result value
      * @param transformation transformation to be applied to values
      */
     default <U> Result<U, E> flatMap(
@@ -473,6 +480,17 @@ public sealed interface Result<R, E> {
         public void ifSuccess(Consumer<R> consumer) {
             consumer.accept(result);
         }
+
+        @Override
+        public Result<R, E> onError(Consumer<E> consumer) {
+            return this;
+        }
+
+        @Override
+        public Result<R, E> onSuccess(Consumer<R> consumer) {
+            consumer.accept(result);
+            return this;
+        }
     }
 
     record Error<R, E>(E error) implements Result<R, E> {
@@ -519,6 +537,17 @@ public sealed interface Result<R, E> {
 
         @Override
         public void ifSuccess(Consumer<R> consumer) {
+        }
+
+        @Override
+        public Result<R, E> onError(Consumer<E> consumer) {
+            consumer.accept(error);
+            return this;
+        }
+
+        @Override
+        public Result<R, E> onSuccess(Consumer<R> consumer) {
+            return this;
         }
     }
 }

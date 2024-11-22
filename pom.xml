@@ -4,7 +4,7 @@
     <packaging>jar</packaging>
     <groupId>com.github.sviperll</groupId>
     <artifactId>result4j</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <name>result4j</name>
     <url>https://github.com/sviperll/result4j</url>
     <description>
@@ -57,15 +57,8 @@
         </dependency>
     </dependencies>
     <organization>
-        <name>Victor Nazarov &lt;asviraspossible@gmail.com&gt;</name>
+        <name>The result4j Contributors (https://github.com/sviperll/result4j)</name>
     </organization>
-    <developers>
-        <developer>
-            <id>sviperll</id>
-            <name>Victor Nazarov</name>
-            <email>asviraspossible@gmail.com</email>
-        </developer>
-    </developers>
     <inceptionYear>2024</inceptionYear>
     <scm>
         <connection>scm:git:${project.scm.url}</connection>
@@ -218,10 +211,38 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.5.3</version>
                     <configuration>
+                        <preparationGoals>resources:copy-resources@prepare-released-version-svg scm:add -Dincludes=released-version.svg</preparationGoals>
+                        <completionGoals>resources:copy-resources@prepare-released-version-svg scm:add -Dincludes=released-version.svg</completionGoals>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.1</version>
+                    <executions>
+                        <execution>
+                            <id>prepare-released-version-svg</id>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.basedir}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>src/main/img</directory>
+                                        <includes>
+                                            <include>released-version.svg</include>
+                                        </includes>
+                                        <filtering>true</filtering>
+                                    </resource>
+                                </resources>
+                                <encoding>UTF-8</encoding>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

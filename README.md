@@ -29,7 +29,7 @@ result4j
         <dependency>
             <groupId>com.github.sviperll</groupId>
             <artifactId>result4j</artifactId>
-            <version>1.0</version>
+            <version>![released version](./released-version.svg)</version>
         </dependency>
 ````
 

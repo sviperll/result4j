@@ -59,6 +59,13 @@
     <organization>
         <name>The result4j Contributors (https://github.com/sviperll/result4j)</name>
     </organization>
+    <developers>
+        <developer>
+            <id>sviperll</id>
+            <name>Victor Nazarov</name>
+            <email>asviraspossible@gmail.com</email>
+        </developer>
+    </developers>
     <inceptionYear>2024</inceptionYear>
     <scm>
         <connection>scm:git:${project.scm.url}</connection>
@@ -242,7 +249,7 @@
                         <publishingServerId>oss-sonatype-central</publishingServerId>
                         <autoPublish>true</autoPublish>
                         <waitUntil>published</waitUntil>
-                   </configuration>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

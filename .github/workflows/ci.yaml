@@ -34,6 +34,6 @@ jobs:
           cache: maven
           check-latest: true
 
-      - name: Execute Maven 'validate' task
+      - name: Execute Maven 'verify' task
         shell: bash
-        run: ./mvnw validate
+        run: ./mvnw verify

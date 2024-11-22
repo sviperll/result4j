@@ -29,7 +29,8 @@ result4j
         &lt;dependency&gt;
             &lt;groupId&gt;com.github.sviperll&lt;/groupId&gt;
             &lt;artifactId&gt;result4j&lt;/artifactId&gt;
-            &lt;version&gt;<img src="./released-version.svg" alt="released version">&lt;/version&gt;
+            &lt;version&gt;<img src="./released-version.svg" alt="released version"
+                                style="width: 1.5em; height: 1em">&lt;/version&gt;
         &lt;/dependency&gt;
 </pre>
 

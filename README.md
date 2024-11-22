@@ -25,14 +25,15 @@ Getting Started
 result4j
 [is available in Maven Central](https://central.sonatype.com/artifact/com.github.sviperll/result4j).
 
-<pre>
-        &lt;dependency&gt;
-            &lt;groupId&gt;com.github.sviperll&lt;/groupId&gt;
-            &lt;artifactId&gt;result4j&lt;/artifactId&gt;
-            &lt;version&gt;<img src="./released-version.svg" alt="released version"
-                                style="width: 1.5em; height: 1em">&lt;/version&gt;
-        &lt;/dependency&gt;
-</pre>
+![Maven Central Version](https://img.shields.io/maven-central/v/com.github.sviperll/result4j)
+
+````
+        <dependency>
+            <groupId>com.github.sviperll</groupId>
+            <artifactId>result4j</artifactId>
+            <version>$LATEST_VERSION<!-- see above --></version>
+        </dependency>
+````
 
 Overview
 --------

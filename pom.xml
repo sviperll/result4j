@@ -208,38 +208,10 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.5.3</version>
                     <configuration>
-                        <preparationGoals>resources:copy-resources@prepare-released-version-svg scm:add -Dincludes=released-version.svg</preparationGoals>
-                        <completionGoals>resources:copy-resources@prepare-released-version-svg scm:add -Dincludes=released-version.svg</completionGoals>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.1</version>
-                    <executions>
-                        <execution>
-                            <id>prepare-released-version-svg</id>
-                            <goals>
-                                <goal>copy-resources</goal>
-                            </goals>
-                            <configuration>
-                                <outputDirectory>${project.basedir}</outputDirectory>
-                                <resources>
-                                    <resource>
-                                        <directory>src/main/img</directory>
-                                        <includes>
-                                            <include>released-version.svg</include>
-                                        </includes>
-                                        <filtering>true</filtering>
-                                    </resource>
-                                </resources>
-                                <encoding>UTF-8</encoding>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
@@ -248,7 +220,7 @@
                     <configuration>
                         <publishingServerId>oss-sonatype-central</publishingServerId>
                         <autoPublish>true</autoPublish>
-                        <waitUntil>published</waitUntil>
+                        <waitUntil>validated</waitUntil>
                     </configuration>
                 </plugin>
             </plugins>

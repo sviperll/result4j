@@ -1,0 +1,4 @@
+# https://help.github.com/articles/dealing-with-line-endings/
+# cmd files are Windows files and should use CRLF
+
+*.cmd text eol=crlf

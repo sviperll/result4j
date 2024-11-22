@@ -9,14 +9,21 @@
     <url>https://github.com/sviperll/result4j</url>
     <description>
         The project provides Result-type similar to Result-type in Rust that
-        allows to return either successfull result or otherwise some kind of error.
+        allows to return either successful result or otherwise some kind of error.
 
-        In Java native way of reporting errors are exceptions, either checked or unchecked,
-        but Result-type provides a way to pass error enformation as a first-class value through
+        In Java, the native way of reporting errors are exceptions, either checked or unchecked.
+        You do not need Result-type most of the time in Java-code, where
+        you can directly throw exceptions.
+        But there are situations, where more functional-style is used.
+        In such situations pure-functions are expected that throw no exceptions.
+        Handling exception in such situations can be cumbersome and require a lot of boilerplate code.
+        Result-type and associated helper-classes help with exception handling and
+        allow to write idiomatic functional code that can interact with methods that throw exceptions.
+
+        Result-type provides a way to pass error information as a first-class value through
         the code written in functional style.
-
         Routines are provided for interoperability of normal code that uses exception and
-        functional code that uses Result-type, so that exceptions can be catched and propagated as
+        functional code that uses Result-type, so that exceptions can be caught and propagated as
         errors in Result-type and then rethrown again later in the control-flow.
     </description>
     <licenses>
@@ -36,7 +43,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>5.10.1</version>
+                <version>5.11.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -83,12 +90,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.6.0</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>10.12.6</version>
+                            <version>10.20.1</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sviperll</groupId>
@@ -106,7 +113,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.2.3</version>
+                    <version>3.5.2</version>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
                     </configuration>
@@ -114,7 +121,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>3.13.0</version>
                     <configuration>
                         <compilerArgs>
                             <arg>-Xlint</arg>
@@ -128,7 +135,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.5.0</version>
                     <configuration>
                         <rules>
                             <requireJavaVersion>
@@ -144,12 +151,12 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>flatten-maven-plugin</artifactId>
-                    <version>1.5.0</version>
+                    <version>1.6.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>license-maven-plugin</artifactId>
-                    <version>2.3.0</version>
+                    <version>2.4.0</version>
                     <configuration>
                         <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
                         <addSvnKeyWords>false</addSvnKeyWords>
@@ -171,7 +178,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.7</version>
                     <configuration>
                         <passphraseServerId>gpg</passphraseServerId>
                     </configuration>
@@ -179,12 +186,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.3.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.6.3</version>
+                    <version>3.11.1</version>
                     <configuration>
                         <doclint>all,-missing</doclint>
                         <failOnError>true</failOnError>
@@ -194,12 +201,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.1.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.13</version>
+                    <version>1.6.14</version>
                     <configuration>
                         <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                         <serverId>oss-sonatype-nexus</serverId>

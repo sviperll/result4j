@@ -76,7 +76,7 @@ import java.util.function.Function;
  * {@snippet lang="java" :
  *     Result<String, Integer> receivedResult = ...;
  *     String value =
- *             receivedResult.throwError(
+ *             receivedResult.orOnErrorThrow(
  *                     code -> new IOException("%s: error".formatted(code))
  *             );
  *     System.out.println(value);
@@ -84,7 +84,7 @@ import java.util.function.Function;
  * <p>
  * Instead of a low-level pattern-matching,
  * higher level helper-methods are available in {@code Result}-class.
- * In the snippet above {@link Result#throwError(Function)} is used to throw exception when
+ * In the snippet above {@link Result#orOnErrorThrow(Function)} is used to throw exception when
  * {@code Result} contains error.
  *
  * {@snippet lang="java" :
@@ -92,7 +92,7 @@ import java.util.function.Function;
  *             Stream.of("a.txt", "b.txt", "c.txt")
  *                     .map(name -> loadFile(name))
  *                     .collect(ResultCollectors.toSingleResult(Collectors.join()))
- *                     .throwError(Function.identity());
+ *                     .orOnErrorThrow(Function.identity());
  * }
  * <p>
  * In the above example we expect that the {@code loadFile} method returns the {@code Result}-type
@@ -391,8 +391,26 @@ public sealed interface Result<R, E> {
      * @param errorToExceptionConverter function to convert error-value to an exception
      * @return the value of this result, when it is a successful result
      * @throws X when this is an error result
+     * @deprecated use {@link #orOnErrorThrow(Function)} instead
      */
+    @Deprecated(forRemoval = true, since = "1.2.0")
     default <X extends Exception> R throwError(Function<? super E, X> errorToExceptionConverter)
+            throws X {
+        return orOnErrorThrow(errorToExceptionConverter);
+    }
+
+    /**
+     * Throws an exception, by converting error-value to an exception instance.
+     * <p>
+     * Returns the value of this result when this is a successful result, or otherwise
+     * throws an exception, by creating exception instance from error-value.
+     *
+     * @param <X> type of thrown exception
+     * @param errorToExceptionConverter function to convert error-value to an exception
+     * @return the value of this result, when it is a successful result
+     * @throws X when this is an error result
+     */
+    default <X extends Exception> R orOnErrorThrow(Function<? super E, X> errorToExceptionConverter)
             throws X {
         return switch (this) {
             case Success<R, E> success -> success.result;

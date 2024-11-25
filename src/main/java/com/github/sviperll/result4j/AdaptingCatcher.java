@@ -77,7 +77,7 @@ import java.util.function.Supplier;
  *                     // @highlight substring="ml" type="highlighted" :
  *                     .map(Result.flatMapping(ml.catching(Fakes::recognizeImage)))
  *                     .collect(ResultCollectors.toSingleResult(Collectors.toList()))
- *                     .throwError(Function.identity());
+ *                     .orOnErrorThrow(Function.identity());
  * }
  * <p>
  * In the example above two methods are used {@code readFile} and {@code recognizeImage}.

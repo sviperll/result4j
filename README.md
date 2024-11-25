@@ -67,13 +67,13 @@ Pattern matching can be used to check unknown result value as shown above.
 
 ````java
 Result<String, Integer> receivedResult = ...;
-String value = receivedResult.throwError(code -> new IOException("%s: error".formatted(code)));
+String value = receivedResult.orOnErrorThrow(code -> new IOException("%s: error".formatted(code)));
 System.out.println(value);
 ````
 
 Instead of a low-level pattern-matching,
 higher level helper-methods are available in `Result`-class.
-In the snippet above `throwError` is used to throw exception when `Result` contains error.
+In the snippet above `orOnErrorThrow` is used to throw exception when `Result` contains error.
 
 Result-type is created for interoperability between normal Java-code that throws exception and
 more functional code.
@@ -85,7 +85,7 @@ String concatenation =
         Stream.of("a.txt", "b.txt", "c.txt")
                 .map(io.catching(name -> loadResource(name)))
                 .collect(ResultCollectors.toSingleResult(Collectors.join()))
-                .throwError(Function.identity());
+                .orOnErrorThrow(Function.identity());
 ````
 
 Above code uses `Catcher` class to adapt functions that
@@ -107,7 +107,7 @@ class MyMain {
             Catcher.of(IOException.class).forFunctions();
         Function<String, Result<String, IOException>> f = io.catching(MyMain::loadResult);
         Result<String, IOException> result = f.apply("my-resource");
-        String value = result.throwError(Function.identity());
+        String value = result.orOnErrorThrow(Function.identity());
         System.out.println(value);
     }
 }
@@ -130,6 +130,6 @@ List<Animal> animals1 =
                 .map(io.catching(Fakes::readFile))
                 .map(Result.flatMapping(ml.catching(Fakes::recognizeImage)))
                 .collect(ResultCollectors.toSingleResult(Collectors.toList()))
-                .throwError(Function.identity());
+                .orOnErrorThrow(Function.identity());
 Assertions.assertEquals(List.of(Animal.CAT, Animal.DOG), animals1);
 ````

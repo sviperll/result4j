@@ -43,7 +43,7 @@
  *             Stream.of("a.txt", "b.txt", "c.txt")
  *                     .map(io.catching(name -> loadResource(name)))
  *                     .collect(ResultCollectors.toSingleResult(Collectors.join()))
- *                     .throwError(Function.identity());
+ *                     .orOnErrorThrow(Function.identity());
  * }
  * <p>
  * Above code uses {@link Catcher} class to adapt functions that
@@ -69,7 +69,7 @@
  *                     .map(io.catching(Fakes::readFile))
  *                     .map(Result.flatMapping(ml.catching(Fakes::recognizeImage)))
  *                     .collect(ResultCollectors.toSingleResult(Collectors.toList()))
- *                     .throwError(Function.identity());
+ *                     .orOnErrorThrow(Function.identity());
  *     Assertions.assertEquals(List.of(Animal.CAT, Animal.DOG), animals1);
  * }
  */

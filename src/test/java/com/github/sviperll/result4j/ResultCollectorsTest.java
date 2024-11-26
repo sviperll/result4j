@@ -28,6 +28,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ResultCollectorsTest {
     @Test
     public void nonAdaptedRuntimeExceptionFailure() {
@@ -37,10 +39,16 @@ public class ResultCollectorsTest {
                 Stream.of("123", "234", "xvxv", "456")
                         .map(numberFormat.catching(Integer::parseInt))
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
-        Assertions.assertThrows(
-                NumberFormatException.class,
-                () -> result.orOnErrorThrow(Function.identity())
-        );
+        ResultAssert.assertThat(result)
+                    .isError()
+                    .hasErrorThat(
+                            exception ->
+                                assertThat(exception)
+                                    .isInstanceOf(NumberFormatException.class));
+//          Assertions.assertThrows(
+//                  NumberFormatException.class,
+//                  () -> result.orOnErrorThrow(Function.identity())
+//          );
     }
 
     @Test
@@ -169,6 +177,7 @@ public class ResultCollectorsTest {
         PipelineException(IOException ex) {
             super(ex);
         }
+
         PipelineException(MLException ex) {
             super(ex);
         }

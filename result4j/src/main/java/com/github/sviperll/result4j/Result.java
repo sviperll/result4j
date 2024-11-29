@@ -409,6 +409,7 @@ public sealed interface Result<R, E> {
      * @param errorToExceptionConverter function to convert error-value to an exception
      * @return the value of this result, when it is a successful result
      * @throws X when this is an error result
+     * @since 1.2.0
      */
     default <X extends Exception> R orOnErrorThrow(Function<? super E, X> errorToExceptionConverter)
             throws X {
@@ -421,10 +422,20 @@ public sealed interface Result<R, E> {
     /** Invokes given consumer for a successful result value. */
     void ifSuccess(Consumer<R> consumer);
 
-    /** Invokes given consumer for an error-value of this result, and returns the same result. */
+    /**
+     * Invokes given consumer for an error-value of this result, and returns the same result.
+     *
+     * @param consumer consumer to be invoked for an error-value
+     * @since 1.1.0
+     */
     Result<R, E> peekError(Consumer<E> consumer);
 
-    /** Invokes given consumer for a success-value of this result, and returns the same result. */
+    /**
+     * Invokes given consumer for a success-value of this result, and returns the same result.
+     *
+     * @param consumer consumer to be invoked for an success-value
+     * @since 1.1.0
+     */
     Result<R, E> peekSuccess(Consumer<R> consumer);
 
     /**

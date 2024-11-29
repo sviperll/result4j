@@ -32,7 +32,7 @@ import org.assertj.core.api.Assertions;
  * @param <E> type representing error.
  *
  * @see Result
- * @see <a href=https://assertj.github.io/doc/">AssertJ</a>
+ * @see <a href="https://assertj.github.io/doc/">AssertJ</a>
  * @since 1.2.0
  */
 public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Result<R, E>> {
@@ -61,7 +61,11 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
     /**
      * Verifies that the {@link Result} represents Error.
      * <p>
-     * Example: {@snippet lang="java" : assertThat(result).isError(); }
+     * Example:
+     *
+     * {@snippet lang="java":
+     *     assertThat(result).isError();
+     * }
      *
      * @return {@code this} assertion object.
      * @throws AssertionError if the {@code Result} represents Success.
@@ -75,7 +79,11 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
     /**
      * Verifies that the {@link Result} represents Success.
      * <p>
-     * Example: {@snippet lang="java" : assertThat(result).isSuccess(); }
+     * Example:
+     *
+     * {@snippet lang="java":
+     *     assertThat(result).isSuccess();
+     * }
      *
      * @return {@code this} assertion object.
      * @throws AssertionError if the {@code Result} represents Error.
@@ -92,7 +100,11 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * Verifies that the {@link Result} represents Error and the error value
      * is equal to the expected value.
      * <p>
-     * Example: {@snippet lang="java" : assertThat(result).hasErrorEqualTo(expectedError); }
+     * Example:
+     *
+     * {@snippet lang="java":
+     *     assertThat(result).hasErrorEqualTo(expectedError);
+     * }
      *
      * @param expectedError the expected error value.
      * @return {@code this} assertion object.
@@ -116,28 +128,33 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * passed assertion is evaluated and all failures are reported.
      * <p>
      * Example:
-     * {@snippet lang="java" :
-     * Result result = Result.error(
-     *      new IllegalArgumentException("Name is invalid"));
      *
-     * // assertions succeed:
-     * ResultAssert.assertThat(result)
-     *     .isError()
-     *     .hasErrorThat(error ->
-     *          Assertions.assertThat(error)
-     *            .isInstanceOf(IllegalArgumentException.class)
-     *            .hasMessage("Name is invalid")
-     *     );
+     * {@snippet lang="java":
+     *     Result result =
+     *             Result.error(
+     *                     new IllegalArgumentException("Name is invalid")
+     *             );
      *
-     * // assertion fails:
-     * ResultAssert.assertThat(result)
-     *     .isError()
-     *     .hasErrorThat(error ->
-     *          Assertions.assertThat(error)
-     *            .isInstanceOf(NullPointerException.class)
-     *            .hasMessage("Name is invalid")
-     *     );
-     *  }
+     *     // assertions succeed:
+     *     ResultAssert.assertThat(result)
+     *             .isError()
+     *             .hasErrorThat(
+     *                     error ->
+     *                             Assertions.assertThat(error)
+     *                                     .isInstanceOf(IllegalArgumentException.class)
+     *                                     .hasMessage("Name is invalid")
+     *             );
+     *
+     *     // assertion fails:
+     *     ResultAssert.assertThat(result)
+     *             .isError()
+     *             .hasErrorThat(
+     *                     error ->
+     *                             Assertions.assertThat(error)
+     *                                     .isInstanceOf(NullPointerException.class)
+     *                                     .hasMessage("Name is invalid")
+     *             );
+     * }
      *
      * @param consumer the consumer to assert the Error value object — must not be {@code null}.
      * @throws NullPointerException if Consumer is {@code null}.
@@ -152,7 +169,11 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * Verifies that the {@link Result} represents Success and
      * the success value is equal to the expected value.
      * <p>
-     * Example: {@snippet lang="java" : assertThat(result).hasSuccessEqualTo(expectedSuccess); }
+     * Example:
+     *
+     * {@snippet lang="java":
+     *     assertThat(result).hasSuccessEqualTo(expectedSuccess);
+     * }
      *
      * @param expectedSuccess the expected success value.
      * @return {@code this} assertion object.
@@ -176,26 +197,28 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * passed assertion is evaluated and all failures are reported.
      * <p>
      * Example:
-     * {@snippet lang="java" :
-     * Result result = Result.success(List.of("one", "two", "three"));
+     * {@snippet lang="java":
+     *     Result result = Result.success(List.of("one", "two", "three"));
      *
-     * // assertions succeed:
-     * ResultAssert.assertThat(result)
-     *     .isSuccess()
-     *     .hasSuccessThat(success ->
-     *          Assertions.assertThat(success)
-     *              .hasSize(3)
-     *              .containsExactlyInAnyOrder("three", "two", "one")
-     *     );
+     *     // assertions succeed:
+     *     ResultAssert.assertThat(result)
+     *             .isSuccess()
+     *             .hasSuccessThat(
+     *                     success ->
+     *                             Assertions.assertThat(success)
+     *                                     .hasSize(3)
+     *                                     .containsExactlyInAnyOrder("three", "two", "one")
+     *             );
      *
-     * // assertion fails:
-     * ResultAssert.assertThat(result)
-     *     .isSuccess()
-     *     .hasSuccessThat(success ->
-     *          Assertions.assertThat(success)
-     *              .hasSize(2)
-     *              .containsExactly("three", "two", "one")
-     *     );
+     *     // assertion fails:
+     *     ResultAssert.assertThat(result)
+     *             .isSuccess()
+     *             .hasSuccessThat(
+     *                     success ->
+     *                             Assertions.assertThat(success)
+     *                                     .hasSize(2)
+     *                                     .containsExactly("three", "two", "one")
+     *             );
      *  }
      *
      * @param consumer the consumer to assert the Success value object — must not be {@code null}.

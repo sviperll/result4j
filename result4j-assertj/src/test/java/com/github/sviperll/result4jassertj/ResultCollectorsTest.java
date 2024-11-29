@@ -17,8 +17,12 @@
  * #L%
  */
 
-package com.github.sviperll.result4j;
+package com.github.sviperll.result4jassertj;
 
+import com.github.sviperll.result4j.AdaptingCatcher;
+import com.github.sviperll.result4j.Catcher;
+import com.github.sviperll.result4j.Result;
+import com.github.sviperll.result4j.ResultCollectors;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -28,6 +32,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static com.github.sviperll.result4jassertj.ResultAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ResultCollectorsTest {
@@ -39,16 +44,12 @@ public class ResultCollectorsTest {
                 Stream.of("123", "234", "xvxv", "456")
                         .map(numberFormat.catching(Integer::parseInt))
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
-        ResultAssert.assertThat(result)
+        assertThat(result)
                     .isError()
                     .hasErrorThat(
                             exception ->
                                 assertThat(exception)
                                     .isInstanceOf(NumberFormatException.class));
-//          Assertions.assertThrows(
-//                  NumberFormatException.class,
-//                  () -> result.orOnErrorThrow(Function.identity())
-//          );
     }
 
     @Test

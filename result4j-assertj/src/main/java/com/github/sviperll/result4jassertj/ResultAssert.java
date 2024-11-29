@@ -17,8 +17,9 @@
  * #L%
  */
 
-package com.github.sviperll.result4j;
+package com.github.sviperll.result4jassertj;
 
+import com.github.sviperll.result4j.Result;
 import java.util.function.Consumer;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
@@ -36,55 +37,43 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
 
     public ResultAssert<R, E> isError() {
         isNotNull();
-
         Assertions.assertThat(actual.isError()).describedAs("Check if Result is an Error").isTrue();
-
         return this;
     }
 
     public ResultAssert<R, E> isSuccess() {
         isNotNull();
-
         Assertions.assertThat(actual.isError())
                 .describedAs("Check if Result is a Success")
                 .isFalse();
-
         return this;
     }
 
     public ResultAssert<R, E> hasErrorEqualTo(E expectedError) {
         isNotNull();
-
         Assertions.assertThat(actualError())
                 .describedAs("Check Result Error")
                 .isEqualTo(expectedError);
-
         return this;
     }
 
     public ResultAssert<R, E> hasErrorThat(Consumer<E> consumer) {
         isNotNull();
-
         consumer.accept(actualError());
-
         return this;
     }
 
     public ResultAssert<R, E> hasSuccessEqualTo(R expectedSuccess) {
         isNotNull();
-
         Assertions.assertThat(actualSuccess())
                 .describedAs("Check Result Success")
                 .isEqualTo(expectedSuccess);
-
         return this;
     }
 
     public ResultAssert<R, E> hasSuccessThat(Consumer<R> consumer) {
         isNotNull();
-
         consumer.accept(actualSuccess());
-
         return this;
     }
 

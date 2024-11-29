@@ -33,5 +33,5 @@
  * @see com.github.sviperll.result4j/com.github.sviperll.result4j
  */
 module com.github.sviperll.result4j {
-    requires java.base;
+    exports com.github.sviperll.result4j;
 }

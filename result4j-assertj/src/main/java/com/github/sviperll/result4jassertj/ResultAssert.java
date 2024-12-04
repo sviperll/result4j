@@ -20,10 +20,9 @@
 package com.github.sviperll.result4jassertj;
 
 import com.github.sviperll.result4j.Result;
-import java.util.Objects;
-import java.util.function.Consumer;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.ObjectAssert;
 
 /**
  * AssertJ {@link org.assertj.core.api.Assert assertions} that can be applied to a {@link Result}.
@@ -38,7 +37,7 @@ import org.assertj.core.api.Assertions;
 public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Result<R, E>> {
 
     /**
-     * Create assertion for {@link Result}.
+     * Creates assertion for {@link Result}.
      *
      * @param actual the actual value.
      * @param <R>    type of successful result value.
@@ -49,11 +48,6 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
         return new ResultAssert<>(actual);
     }
 
-    /**
-     * Create a new {@code ResultAssert} instance.
-     *
-     * @param actual the actual value.
-     */
     private ResultAssert(Result<R, E> actual) {
         super(actual, ResultAssert.class);
     }
@@ -71,8 +65,7 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * @throws AssertionError if the {@code Result} represents Success.
      */
     public ResultAssert<R, E> isError() {
-        isNotNull();
-        Assertions.assertThat(actual.isError()).describedAs("Check if Result is an Error").isTrue();
+        hasErrorThat();
         return myself;
     }
 
@@ -89,158 +82,116 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * @throws AssertionError if the {@code Result} represents Error.
      */
     public ResultAssert<R, E> isSuccess() {
-        isNotNull();
-        Assertions.assertThat(actual.isError())
-                .describedAs("Check if Result is a Success")
-                .isFalse();
+        hasValueThat();
         return myself;
     }
 
     /**
-     * Verifies that the {@link Result} represents Error and the error value
-     * is equal to the expected value.
+     * Verifies that result-value represents an error and provides an assert-object that
+     * can be used to assert properties of the underlying error-value.
      * <p>
-     * Example:
+     * This operation switches the subject of assertions.
      *
      * {@snippet lang="java":
-     *     assertThat(result).hasErrorEqualTo(expectedError);
+     *     ResultAssert.assertThat(result)
+     *             .isNotNull()                  // 1
+     *             .isNotEqualTo(anotherResult)  // 2
+     *             .hasErrorThat()               // @highlight substring="hasErrorThat"
+     *             .isNotNull()                  // 3
      * }
-     *
-     * @param expectedError the expected error value.
-     * @return {@code this} assertion object.
-     * @throws AssertionError if the {@code Result} represents Success or
-     *     the error value is not equal to the expected value.
-     */
-    public ResultAssert<R, E> hasErrorEqualTo(E expectedError) {
-        isNotNull();
-        Assertions.assertThat(actualError())
-                .describedAs("Check Result Error")
-                .isEqualTo(expectedError);
-        return myself;
-    }
-
-    /**
-     * Verifies that the Error value object satisfied the given requirements
-     * expressed as {@link Consumer}.
-     * This is terminal operation of this assertion chain.
      * <p>
-     * This is useful to perform an assertions on an Error value object,
-     * passed assertion is evaluated and all failures are reported.
+     * Lines 1 and 2 in the example above assert properties of the {@link Result}-object
+     * referenced by the <tt>{@code result}</tt> variable, but
+     * line 2 now represents an assertion,
+     * not about the whole {@link Result}-object, but
+     * about the error-value inside this object.
+     * This is so, because
+     * the line 3 follows after the call to the {@link ResultAssert#hasErrorThat()} method.
      * <p>
-     * Example:
+     * Note that the object that is returned by the method is of the {@link ObjectAssert}-type,
+     * if you need more specific assertions,
+     * you may want to follow the {@link ResultAssert#hasErrorThat()} call with the call to
+     * the {@link AbstractAssert#asInstanceOf(org.assertj.core.api.InstanceOfAssertFactory)} or
+     * the {@link AbstractAssert#satisfies(java.util.function.Consumer)} method.
+     * <p>
+     * Examples:
      *
      * {@snippet lang="java":
-     *     Result result =
-     *             Result.error(
-     *                     new IllegalArgumentException("Name is invalid")
-     *             );
+     *     ResultAssert.assertThat(result)
+     *             .hasErrorThat()
+     *             .isExactlyInstanceOf(RuntimeException.class)
+     *             .asInstanceOf(InstanceOfAssertFactories.THROWABLE)
+     *             .cause()
+     *             .isExactlyInstanceOf(NumberFormatException.class)
+     *             .hasMessage("For input string: \"xyz\"");
+     * }
+     * <p>
+     * Another example that uses
+     * the {@link AbstractAssert#satisfies(java.util.function.Consumer)} method.
      *
-     *     // assertions succeed:
+     * {@snippet lang="java":
      *     ResultAssert.assertThat(result)
      *             .isError()
-     *             .hasErrorThat(
-     *                     error ->
-     *                             Assertions.assertThat(error)
-     *                                     .isInstanceOf(IllegalArgumentException.class)
-     *                                     .hasMessage("Name is invalid")
-     *             );
-     *
-     *     // assertion fails:
-     *     ResultAssert.assertThat(result)
-     *             .isError()
-     *             .hasErrorThat(
+     *             .hasErrorThat()
+     *             .satisfies(
      *                     error ->
      *                             Assertions.assertThat(error)
      *                                     .isInstanceOf(NullPointerException.class)
-     *                                     .hasMessage("Name is invalid")
+     *                                     .hasMessage("xyz")
      *             );
      * }
      *
-     * @param consumer the consumer to assert the Error value object — must not be {@code null}.
-     * @throws NullPointerException if Consumer is {@code null}.
      */
-    public void hasErrorThat(Consumer<? super E> consumer) {
-        Objects.requireNonNull(consumer, "Error value consumer should be non null");
+    public ObjectAssert<E> hasErrorThat() {
         isNotNull();
-        consumer.accept(actualError());
+        if (!(actual instanceof Result.Error(E error))) {
+            throw failure("Expected Result to be Error, but was Success");
+        }
+        return Assertions.assertThat(error);
     }
 
     /**
-     * Verifies that the {@link Result} represents Success and
-     * the success value is equal to the expected value.
+     * Verifies that result-value represents a result of the successful operation and
+     * provides an assert-object that can be used to assert properties of the underlying value.
      * <p>
-     * Example:
+     * This operation switches the subject of assertions.
      *
      * {@snippet lang="java":
-     *     assertThat(result).hasSuccessEqualTo(expectedSuccess);
+     *     ResultAssert.assertThat(result)
+     *             .isNotNull()                  // 1
+     *             .isNotEqualTo(anotherResult)  // 2
+     *             .hasValueThat()               // @highlight substring="hasValueThat"
+     *             .isNotNull()                  // 3
      * }
+     * <p>
+     * Lines 1 and 2 in the example above assert properties of the {@link Result}-object
+     * referenced by the <tt>{@code result}</tt> variable, but
+     * line 3 now represents an assertion,
+     * not about the whole {@link Result}-object, but
+     * about the value inside this object.
+     * This is so, because
+     * the line 3 follows after the call to the {@link ResultAssert#hasValueThat()} method.
+     * <p>
+     * Note that the object that is returned by the method is of the {@link ObjectAssert}-type,
+     * if you need more specific assertions,
+     * you may want to follow the {@link ResultAssert#hasValueThat()} call with the call to
+     * the {@link AbstractAssert#asInstanceOf(org.assertj.core.api.InstanceOfAssertFactory)} or
+     * the {@link AbstractAssert#satisfies(java.util.function.Consumer)} method.
+     * <p>
+     * Examples:
      *
-     * @param expectedSuccess the expected success value.
-     * @return {@code this} assertion object.
-     * @throws AssertionError if the {@code Result} represents Error or
-     *     the success value is not equal to the expected value.
-     */
-    public ResultAssert<R, E> hasSuccessEqualTo(R expectedSuccess) {
-        isNotNull();
-        Assertions.assertThat(actualSuccess())
-                .describedAs("Check Result Success")
-                .isEqualTo(expectedSuccess);
-        return myself;
-    }
-
-    /**
-     * Verifies that the Success value object satisfied the given requirements
-     * expressed as {@link Consumer}.
-     * This is terminal operation of this assertion chain.
-     * <p>
-     * This is useful to perform an assertions on a Success value object,
-     * passed assertion is evaluated and all failures are reported.
-     * <p>
-     * Example:
      * {@snippet lang="java":
-     *     Result result = Result.success(List.of("one", "two", "three"));
-     *
-     *     // assertions succeed:
      *     ResultAssert.assertThat(result)
-     *             .isSuccess()
-     *             .hasSuccessThat(
-     *                     success ->
-     *                             Assertions.assertThat(success)
-     *                                     .hasSize(3)
-     *                                     .containsExactlyInAnyOrder("three", "two", "one")
-     *             );
-     *
-     *     // assertion fails:
-     *     ResultAssert.assertThat(result)
-     *             .isSuccess()
-     *             .hasSuccessThat(
-     *                     success ->
-     *                             Assertions.assertThat(success)
-     *                                     .hasSize(2)
-     *                                     .containsExactly("three", "two", "one")
-     *             );
-     *  }
-     *
-     * @param consumer the consumer to assert the Success value object — must not be {@code null}.
-     * @throws NullPointerException if Consumer is {@code null}.
+     *             .hasValueThat()
+     *             .asInstanceOf(InstanceOfAssertFactories.list(Integer.class))
+     *             .containsExactlyInAnyOrderElementsOf(List.of(123, 456, 234));
+     * }
      */
-    public void hasSuccessThat(Consumer<? super R> consumer) {
-        Objects.requireNonNull(consumer, "Success value consumer should be non null");
+    public ObjectAssert<E> hasValueThat() {
         isNotNull();
-        consumer.accept(actualSuccess());
-    }
-
-    private E actualError() {
-        if (actual instanceof Result.Error(E error)) {
-            return error;
+        if (!(actual instanceof Result.Error(E error))) {
+            throw failure("Expected Result to be Success, but was Error");
         }
-        throw failure("Expected Result to be Error but was Success");
-    }
-
-    private R actualSuccess() {
-        if (actual instanceof Result.Success(R result)) {
-            return result;
-        }
-        throw failure("Expected Result to be Success but was Error");
+        return Assertions.assertThat(error);
     }
 }

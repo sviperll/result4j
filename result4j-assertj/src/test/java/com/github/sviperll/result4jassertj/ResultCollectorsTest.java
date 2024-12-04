@@ -45,11 +45,8 @@ public class ResultCollectorsTest {
                         .map(numberFormat.catching(Integer::parseInt))
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
         assertThat(result)
-                    .isError()
-                    .hasErrorThat(
-                            exception ->
-                                assertThat(exception)
-                                    .isInstanceOf(NumberFormatException.class));
+                .hasErrorThat()
+                .isInstanceOf(NumberFormatException.class);
     }
 
     @Test

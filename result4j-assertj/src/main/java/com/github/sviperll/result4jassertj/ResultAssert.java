@@ -29,7 +29,6 @@ import org.assertj.core.api.ObjectAssert;
  *
  * @param <R> type of successful result value.
  * @param <E> type representing error.
- *
  * @see Result
  * @see <a href="https://assertj.github.io/doc/">AssertJ</a>
  * @since 1.2.0
@@ -53,7 +52,7 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
     }
 
     /**
-     * Verifies that the {@link Result} represents Error.
+     * Verifies that the {@link Result} represents an error.
      * <p>
      * Example:
      *
@@ -187,11 +186,11 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      *             .containsExactlyInAnyOrderElementsOf(List.of(123, 456, 234));
      * }
      */
-    public ObjectAssert<E> hasValueThat() {
+    public ObjectAssert<R> hasValueThat() {
         isNotNull();
-        if (!(actual instanceof Result.Error(E error))) {
+        if (!(actual instanceof Result.Success(R value))) {
             throw failure("Expected Result to be Success, but was Error");
         }
-        return Assertions.assertThat(error);
+        return Assertions.assertThat(value);
     }
 }

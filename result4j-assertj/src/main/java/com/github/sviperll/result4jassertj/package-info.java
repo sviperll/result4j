@@ -24,7 +24,7 @@
  * Most of the functionality is provided by the {@link ResultAssert}-class.
  *
  * @see ResultAssert
- * @see Result
+ * @see com.github.sviperll.result4j.Result
  * @see <a href="https://assertj.github.io/doc/">AssertJ</a>
  * @since 1.2.0
  */

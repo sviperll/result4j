@@ -25,7 +25,7 @@
  * the {com.github.sviperll.result4jassertj/com.github.sviperll.result4jassertj}-package.
  *
  * @see com.github.sviperll.result4jassertj/com.github.sviperll.result4jassertj
- * @see Result
+ * @see com.github.sviperll.result4j.Result
  * @see <a href="https://assertj.github.io/doc/">AssertJ</a>
  * @since 1.2.0
  */

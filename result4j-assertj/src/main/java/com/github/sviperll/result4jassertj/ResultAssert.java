@@ -123,7 +123,7 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * }
      * <p>
      * Lines 1 and 2 in the example above assert properties of the {@link Result}-object
-     * referenced by the <tt>{@code result}</tt> variable, but
+     * referenced by the {@code result} variable, but
      * line 2 now represents an assertion,
      * not about the whole {@link Result}-object, but
      * about the error-value inside this object.
@@ -134,7 +134,7 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * if you need more specific assertions,
      * you may want to follow the {@link ResultAssert#hasErrorThat()} call with the call to
      * the {@link AbstractAssert#asInstanceOf(org.assertj.core.api.InstanceOfAssertFactory)} or
-     * the {@link AbstractAssert#satisfies(java.util.function.Consumer)} method.
+     * the {@link AbstractAssert#satisfies(java.util.function.Consumer...)} method.
      * <p>
      * Examples:
      *
@@ -149,7 +149,7 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * }
      * <p>
      * Another example that uses
-     * the {@link AbstractAssert#satisfies(java.util.function.Consumer)} method.
+     * the {@link AbstractAssert#satisfies(java.util.function.Consumer...)} method.
      *
      * {@snippet lang="java":
      *     ResultAssert.assertThat(result)
@@ -187,7 +187,7 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * }
      * <p>
      * Lines 1 and 2 in the example above assert properties of the {@link Result}-object
-     * referenced by the <tt>{@code result}</tt> variable, but
+     * referenced by the {@code result} variable, but
      * line 3 now represents an assertion,
      * not about the whole {@link Result}-object, but
      * about the value inside this object.
@@ -198,7 +198,7 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * if you need more specific assertions,
      * you may want to follow the {@link ResultAssert#hasValueThat()} call with the call to
      * the {@link AbstractAssert#asInstanceOf(org.assertj.core.api.InstanceOfAssertFactory)} or
-     * the {@link AbstractAssert#satisfies(java.util.function.Consumer)} method.
+     * the {@link AbstractAssert#satisfies(java.util.function.Consumer...)} method.
      * <p>
      * Examples:
      *

@@ -27,8 +27,31 @@ import org.assertj.core.api.ObjectAssert;
 /**
  * AssertJ {@link org.assertj.core.api.Assert assertions} that can be applied to a {@link Result}.
  *
+ * To use this class you may
+ * statically import the {@link ResultAssert#assertThat(Result)} method and
+ * use it together with the other variants provided by AssertJ.
+ *
+ * {@snippet lang="java":
+ *     // Standard AsserJ assertions:
+ *     import static org.assertj.core.api.Assertions.assertThat;
+ *
+ *     // Assertions for the Result-values
+ *     import static com.github.sviperll.result4jassertj.ResultAssert.assertThat;
+ * }
+ *
+ * With the above static-imports, test-code may just use unqualified {@code assertThat}-calls.
+ *
+ * {@snippet lang="java":
+ *     void myOperationSucceeds() {
+ *         Result<String, Integer> result = myOperation();
+ *
+ *         assertThat(result).isSuccess();
+ *     }
+ * }
+ *
  * @param <R> type of successful result value.
  * @param <E> type representing error.
+ *
  * @see Result
  * @see <a href="https://assertj.github.io/doc/">AssertJ</a>
  * @since 1.2.0

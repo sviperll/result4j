@@ -8,7 +8,7 @@
     <name>result4j-base</name>
     <modules>
         <module>result4j</module>
-        <module>result4j-assertj</module>
+        <module>assertj-result4j</module>
     </modules>
     <dependencyManagement>
         <dependencies>

@@ -17,7 +17,7 @@
  * #L%
  */
 
-package com.github.sviperll.result4jassertj;
+package com.github.sviperll.assertj.result4j;
 
 import com.github.sviperll.result4j.AdaptingCatcher;
 import com.github.sviperll.result4j.Catcher;
@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 
-import static com.github.sviperll.result4jassertj.ResultAssert.assertThat;
+import static com.github.sviperll.assertj.result4j.ResultAssert.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.list;
 
 public class ResultCollectorsTest {
@@ -61,7 +61,7 @@ public class ResultCollectorsTest {
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
         assertThat(result)
-                .hasValueThat()
+                .hasSuccessValueThat()
                 .asInstanceOf(list(Integer.class))
                 .containsExactlyInAnyOrderElementsOf(List.of(456, 234, 123));
     }
@@ -94,7 +94,7 @@ public class ResultCollectorsTest {
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
         assertThat(result)
-                .hasValueThat()
+                .hasSuccessValueThat()
                 .asInstanceOf(list(Integer.class))
                 .containsExactlyInAnyOrderElementsOf(List.of(123, 456, 234));
     }
@@ -107,12 +107,12 @@ public class ResultCollectorsTest {
                 Catcher.of(MLException.class).map(PipelineException::new).forFunctions();
         Result<List<Animal>, PipelineException> animals =
                 Stream.of("cat.jpg", "dog.jpg")
-                        .map(io.catching(Fakes::readFile))
-                        .map(Result.flatMapping(ml.catching(Fakes::recognizeImage)))
+                        .map(io.catching(TestSystem::readFile))
+                        .map(Result.flatMapping(ml.catching(TestModel::recognizeImage)))
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
         assertThat(animals)
-                .hasValueThat()
+                .hasSuccessValueThat()
                 .asInstanceOf(list(Animal.class))
                 .containsExactlyInAnyOrderElementsOf(List.of(Animal.CAT, Animal.DOG));
     }
@@ -125,8 +125,8 @@ public class ResultCollectorsTest {
                 Catcher.of(MLException.class).map(PipelineException::new).forFunctions();
         Result<List<Animal>, PipelineException> animals =
                 Stream.of("cat.jpg", "dog.jpg", "non-existent.jpg")
-                        .map(io.catching(Fakes::readFile))
-                        .map(Result.flatMapping(ml.catching(Fakes::recognizeImage)))
+                        .map(io.catching(TestSystem::readFile))
+                        .map(Result.flatMapping(ml.catching(TestModel::recognizeImage)))
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
 
@@ -147,8 +147,8 @@ public class ResultCollectorsTest {
                 Catcher.of(MLException.class).map(PipelineException::new).forFunctions();
         Result<List<Animal>, PipelineException> animals =
                 Stream.of("cat.jpg", "dog.jpg", "corrupted.jpg")
-                        .map(io.catching(Fakes::readFile))
-                        .map(Result.flatMapping(ml.catching(Fakes::recognizeImage)))
+                        .map(io.catching(TestSystem::readFile))
+                        .map(Result.flatMapping(ml.catching(TestModel::recognizeImage)))
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
         assertThat(animals)
@@ -163,7 +163,7 @@ public class ResultCollectorsTest {
         DOG, CAT
     }
 
-    static class Fakes {
+    static class TestSystem {
         static String readFile(String name) throws IOException {
             return switch (name) {
                 case "cat.jpg" -> "cat-image";
@@ -172,7 +172,9 @@ public class ResultCollectorsTest {
                 default -> throw new FileNotFoundException("%s: not found".formatted(name));
             };
         }
+    }
 
+    static class TestModel {
         static Animal recognizeImage(String imageData) throws MLException {
             return switch (imageData) {
                 case "cat-image" -> Animal.CAT;

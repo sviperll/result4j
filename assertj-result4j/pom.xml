@@ -8,8 +8,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <packaging>jar</packaging>
-    <artifactId>result4j-assertj</artifactId>
-    <name>result4j-assertj</name>
+    <artifactId>assertj-result4j</artifactId>
+    <name>assertj-result4j</name>
     <dependencies>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -48,7 +48,7 @@
                          !- assertj-core requires it, so
                          !- we need our module under test to explicitly require it.
                          !-->
-                        --add-reads com.github.sviperll.result4jassertj=org.junit.jupiter.api
+                        --add-reads com.github.sviperll.assertj.result4j=org.junit.jupiter.api
                     </argLine>
                 </configuration>
             </plugin>

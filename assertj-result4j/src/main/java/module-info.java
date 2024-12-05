@@ -22,16 +22,16 @@
  * for the {@link com.github.sviperll.result4j.Result}-values in tests that use AssertJ.
  * <p>
  * Most of the functionality is contained in
- * the {com.github.sviperll.result4jassertj/com.github.sviperll.result4jassertj}-package.
+ * the {@link com.github.sviperll.assertj.result4j/com.github.sviperll.assertj.result4j}-package.
  *
- * @see com.github.sviperll.result4jassertj/com.github.sviperll.result4jassertj
+ * @see com.github.sviperll.assertj.result4j/com.github.sviperll.assertj.result4j
  * @see com.github.sviperll.result4j.Result
  * @see <a href="https://assertj.github.io/doc/">AssertJ</a>
  * @since 1.2.0
  */
-module com.github.sviperll.result4jassertj {
+module com.github.sviperll.assertj.result4j {
     requires transitive com.github.sviperll.result4j;
     requires transitive org.assertj.core;
 
-    exports com.github.sviperll.result4jassertj;
+    exports com.github.sviperll.assertj.result4j;
 }

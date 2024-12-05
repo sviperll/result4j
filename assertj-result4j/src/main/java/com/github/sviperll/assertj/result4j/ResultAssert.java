@@ -17,7 +17,7 @@
  * #L%
  */
 
-package com.github.sviperll.result4jassertj;
+package com.github.sviperll.assertj.result4j;
 
 import com.github.sviperll.result4j.Result;
 import org.assertj.core.api.AbstractAssert;
@@ -104,7 +104,7 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * @throws AssertionError if the {@code Result} represents Error.
      */
     public ResultAssert<R, E> isSuccess() {
-        hasValueThat();
+        hasSuccessValueThat();
         return myself;
     }
 
@@ -128,11 +128,11 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * not about the whole {@link Result}-object, but
      * about the error-value inside this object.
      * This is so, because
-     * the line 3 follows after the call to the {@link ResultAssert#hasErrorThat()} method.
+     * the line 3 follows after the call to the {@code hasErrorThat} method.
      * <p>
      * Note that the object that is returned by the method is of the {@link ObjectAssert}-type,
      * if you need more specific assertions,
-     * you may want to follow the {@link ResultAssert#hasErrorThat()} call with the call to
+     * you may want to follow the {@code hasErrorThat} call with the call to
      * the {@link AbstractAssert#asInstanceOf(org.assertj.core.api.InstanceOfAssertFactory)} or
      * the {@link AbstractAssert#satisfies(java.util.function.Consumer...)} method.
      * <p>
@@ -192,11 +192,11 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      * not about the whole {@link Result}-object, but
      * about the value inside this object.
      * This is so, because
-     * the line 3 follows after the call to the {@link ResultAssert#hasValueThat()} method.
+     * the line 3 follows after the call to the {@code hasSuccessValueThat} method.
      * <p>
      * Note that the object that is returned by the method is of the {@link ObjectAssert}-type,
      * if you need more specific assertions,
-     * you may want to follow the {@link ResultAssert#hasValueThat()} call with the call to
+     * you may want to follow the {@code hasSuccessValueThat} call with the call to
      * the {@link AbstractAssert#asInstanceOf(org.assertj.core.api.InstanceOfAssertFactory)} or
      * the {@link AbstractAssert#satisfies(java.util.function.Consumer...)} method.
      * <p>
@@ -209,7 +209,7 @@ public class ResultAssert<R, E> extends AbstractAssert<ResultAssert<R, E>, Resul
      *             .containsExactlyInAnyOrderElementsOf(List.of(123, 456, 234));
      * }
      */
-    public ObjectAssert<R> hasValueThat() {
+    public ObjectAssert<R> hasSuccessValueThat() {
         isNotNull();
         if (!(actual instanceof Result.Success(R value))) {
             throw failure("Expected Result to be Success, but was Error");

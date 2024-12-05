@@ -28,4 +28,4 @@
  * @see <a href="https://assertj.github.io/doc/">AssertJ</a>
  * @since 1.2.0
  */
-package com.github.sviperll.result4jassertj;
+package com.github.sviperll.assertj.result4j;

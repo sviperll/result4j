@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.sviperll</groupId>
+        <artifactId>result4j-base</artifactId>
+        <version>1.2.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <packaging>jar</packaging>
+    <artifactId>assertj-result4j</artifactId>
+    <name>assertj-result4j</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sviperll</groupId>
+            <artifactId>result4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        <!-- org.junit.platform.commons module
+                         !- is normally put on the class-path by surefire-plugin, but
+                         !- in our case it happens to be on the module-path, because
+                         !- assertj-core requires it, so
+                         !- we need it to be patched
+                         !- to be accessible by other test artifacts on the class-path
+                         !-->
+                        --add-exports org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
+                        --add-exports org.junit.platform.commons/org.junit.platform.commons.logging=ALL-UNNAMED
+
+                        <!-- org.junit.jupiter.api module
+                         !- is normally put on the class-path by surefire-plugin, but
+                         !- in our case it happens to be on the module-path, because
+                         !- assertj-core requires it, so
+                         !- we need our module under test to explicitly require it.
+                         !-->
+                        --add-reads com.github.sviperll.assertj.result4j=org.junit.jupiter.api
+                    </argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

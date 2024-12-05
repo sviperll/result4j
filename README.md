@@ -19,6 +19,11 @@ Routines are provided for interoperability of normal code that uses exception an
 functional code that uses Result-type, so that exceptions can be caught and propagated as
 errors in Result-type and then rethrown again later in the control-flow.
 
+Requirements
+------------
+
+Java 21 is required.
+
 Getting Started
 ---------------
 
@@ -34,6 +39,15 @@ result4j
             <version>$LATEST_VERSION<!-- see above --></version>
         </dependency>
 ````
+
+Project Values and Goals
+------------------------
+
+ * Small well-defined library that requires minimal maintainance
+ * Work with the broad range of mainstream Java code (not tailored to some niche flavor of Java)
+ * No bloat
+ * Zero or minimal dependencies
+ * Work with Java-modules (JPMS) and modern Java
 
 Overview
 --------

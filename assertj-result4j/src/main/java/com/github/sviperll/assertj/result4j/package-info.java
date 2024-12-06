@@ -21,9 +21,10 @@
  * Contains classes that allow to use AssertJ with
  * the {@link com.github.sviperll.result4j.Result}-values.
  * <p>
- * Most of the functionality is provided by the {@link ResultAssert}-class.
+ * Most of the functionality is provided by the
+ * {@link com.github.sviperll.assertj.result4j.ResultAssert}-class.
  *
- * @see ResultAssert
+ * @see com.github.sviperll.assertj.result4j.ResultAssert
  * @see com.github.sviperll.result4j.Result
  * @see <a href="https://assertj.github.io/doc/">AssertJ</a>
  * @since 1.2.0

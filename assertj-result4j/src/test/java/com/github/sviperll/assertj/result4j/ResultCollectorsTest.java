@@ -45,6 +45,7 @@ public class ResultCollectorsTest {
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
         assertThat(result)
+                .isError()
                 .hasErrorThat()
                 .asInstanceOf(InstanceOfAssertFactories.THROWABLE)
                 .isExactlyInstanceOf(NumberFormatException.class)
@@ -61,6 +62,7 @@ public class ResultCollectorsTest {
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
         assertThat(result)
+                .isSuccess()
                 .hasSuccessValueThat()
                 .asInstanceOf(list(Integer.class))
                 .containsExactlyInAnyOrderElementsOf(List.of(456, 234, 123));
@@ -76,6 +78,7 @@ public class ResultCollectorsTest {
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
         assertThat(result)
+                .isError()
                 .hasErrorThat()
                 .asInstanceOf(InstanceOfAssertFactories.THROWABLE)
                 .isExactlyInstanceOf(RuntimeException.class)
@@ -94,6 +97,7 @@ public class ResultCollectorsTest {
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
         assertThat(result)
+                .isSuccess()
                 .hasSuccessValueThat()
                 .asInstanceOf(list(Integer.class))
                 .containsExactlyInAnyOrderElementsOf(List.of(123, 456, 234));
@@ -112,6 +116,7 @@ public class ResultCollectorsTest {
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
         assertThat(animals)
+                .isSuccess()
                 .hasSuccessValueThat()
                 .asInstanceOf(list(Animal.class))
                 .containsExactlyInAnyOrderElementsOf(List.of(Animal.CAT, Animal.DOG));
@@ -131,6 +136,7 @@ public class ResultCollectorsTest {
 
 
         assertThat(animals)
+                .isError()
                 .hasErrorThat()
                 .asInstanceOf(InstanceOfAssertFactories.THROWABLE)
                 .isExactlyInstanceOf(PipelineException.class)
@@ -152,6 +158,7 @@ public class ResultCollectorsTest {
                         .collect(ResultCollectors.toSingleResult(Collectors.toList()));
 
         assertThat(animals)
+                .isError()
                 .hasErrorThat()
                 .asInstanceOf(InstanceOfAssertFactories.THROWABLE)
                 .isExactlyInstanceOf(PipelineException.class)

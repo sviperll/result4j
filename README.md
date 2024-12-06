@@ -43,7 +43,7 @@ result4j
 Project Values and Goals
 ------------------------
 
- * Small well-defined library that requires minimal maintainance
+ * Small well-defined library that requires minimal maintenance
  * Work with the broad range of mainstream Java code (not tailored to some niche flavor of Java)
  * No bloat
  * Zero or minimal dependencies
@@ -116,7 +116,7 @@ class MyMain {
         // ...
     }
 
-    void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         Catcher.ForFunctions<IOException> io =
             Catcher.of(IOException.class).forFunctions();
         Function<String, Result<String, IOException>> f = io.catching(MyMain::loadResult);
@@ -145,5 +145,10 @@ List<Animal> animals1 =
                 .map(Result.flatMapping(ml.catching(Fakes::recognizeImage)))
                 .collect(ResultCollectors.toSingleResult(Collectors.toList()))
                 .orOnErrorThrow(Function.identity());
-Assertions.assertEquals(List.of(Animal.CAT, Animal.DOG), animals1);
+
+ResultAssert.assertThat(animals)
+        .isSuccess()
+        .hasSuccessValueThat()
+        .asInstanceOf(list(Animal.class))
+        .containsExactlyInAnyOrderElementsOf(List.of(Animal.CAT, Animal.DOG));
 ````

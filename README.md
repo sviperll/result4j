@@ -152,3 +152,47 @@ ResultAssert.assertThat(animals)
         .asInstanceOf(list(Animal.class))
         .containsExactlyInAnyOrderElementsOf(List.of(Animal.CAT, Animal.DOG));
 ````
+
+Assertj helpers
+---------------
+
+Result4j now provides integration with the [AssertJ testing-framework](https://assertj.github.io/doc/).
+To use it you should use a separate `assertj-result4j` artifact
+(See [Maven Central Page](https://central.sonatype.com/artifact/com.github.sviperll/assertj-result4j)):
+
+![Maven Central Version](https://img.shields.io/maven-central/v/com.github.sviperll/assertj-result4j)
+
+````xml
+<dependency>
+    <groupId>com.github.sviperll</groupId>
+    <artifactId>assertj-result4j</artifactId>
+    <version>$LATEST_VERSION<!-- see above --></version>
+</dependency>
+````
+
+The library allows you to write easy to read assertions in the style of AsserJ.
+
+An assertion of a result of a successful operation:
+
+````java
+        assertThat(result)
+                .isSuccess()
+                .hasSuccessValueThat()
+                .asInstanceOf(list(Integer.class))
+                .containsExactlyInAnyOrderElementsOf(List.of(456, 234, 123));
+````
+
+An assertion of an error:
+
+````java
+        assertThat(result)
+                .isError()
+                .hasErrorThat()
+                .asInstanceOf(InstanceOfAssertFactories.THROWABLE)
+                .isExactlyInstanceOf(RuntimeException.class)
+                .cause()
+                .isExactlyInstanceOf(NumberFormatException.class)
+                .hasMessage("For input string: \"xvxv\"");
+````
+
+See [the API documentation](https://www.javadoc.io/doc/com.github.sviperll/assertj-result4j/latest/) for more details.
